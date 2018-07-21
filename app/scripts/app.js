@@ -10,7 +10,7 @@ Instructions:
 // Inline configuration for jshint below. Prevents `gulp jshint` from failing with quiz starter code.
 /* jshint unused: false */
 
-(function(document) {
+(function (document) {
   'use strict';
 
   var home = null;
@@ -52,18 +52,30 @@ Instructions:
    * @return {Promise}    - A promise that passes the parsed JSON response.
    */
   function getJSON(url) {
-    return get(url).then(function(response) {
+    return get(url).then(function (response) {
       return response.json();
     });
   }
 
-  window.addEventListener('WebComponentsReady', function() {
+  window.addEventListener('WebComponentsReady', function () {
     home = document.querySelector('section[data-route="home"]');
     /*
     Uncomment the next line and start here when you're ready to add the first thumbnail!
 
     Your code goes here!
      */
-    // getJSON('../data/earth-like-results.json')
+    getJSON('../data/earth-like-results.json').then(function (result) {
+      addSearchHeader(result.query);
+      console.log(result);
+      return getJSON(result.results[0]);
+    }).catch(function (error) {
+      console.log(Error('Search request error'));
+    }).then(function (result) {
+      createPlanetThumb(result);
+      console.log(result);
+    }).catch(function (error) {
+      addSearchHeader('unknown');
+      console.log(Error(error));
+    });
   });
 })(document);
